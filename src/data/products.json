@@ -1,0 +1,22 @@
+[
+  { "id": 1, "name": "Rau muống", "category": "rau", "price": 12000, "image": "/src/assets/images/rau-muong.jpg" },
+  { "id": 2, "name": "Cải bó xôi", "category": "rau", "price": 18000, "image": "/src/assets/images/cai-bo-xoi.jpg" },
+  { "id": 3, "name": "Cà rốt", "category": "củ", "price": 15000, "image": "/src/assets/images/ca-rot.jpg" },
+  { "id": 4, "name": "Khoai tây", "category": "củ", "price": 20000, "image": "/src/assets/images/khoai-tay.jpg" },
+  { "id": 5, "name": "Cà chua", "category": "quả", "price": 17000, "image": "/src/assets/images/ca-chua.jpg" },
+  { "id": 6, "name": "Dưa leo", "category": "quả", "price": 16000, "image": "/src/assets/images/dua-leo.jpg" },
+  { "id": 7, "name": "Bắp cải", "category": "rau", "price": 22000, "image": "/src/assets/images/bap-cai.jpg" },
+  { "id": 8, "name": "Bí đỏ", "category": "củ", "price": 25000, "image": "/src/assets/images/bi-do.jpg" },
+  { "id": 9, "name": "Củ cải trắng", "category": "củ", "price": 14000, "image": "/src/assets/images/cu-cai.jpg" },
+  { "id": 10, "name": "Rau cải xanh", "category": "rau", "price": 19000, "image": "/src/assets/images/cai-xanh.jpg" },
+  { "id": 11, "name": "Ớt chuông", "category": "quả", "price": 28000, "image": "/src/assets/images/ot-chuong.jpg" },
+  { "id": 12, "name": "Hành lá", "category": "rau", "price": 10000, "image": "/src/assets/images/hanh-la.jpg" },
+  { "id": 13, "name": "Su hào", "category": "củ", "price": 18000, "image": "/src/assets/images/su-hao.jpg" },
+  { "id": 14, "name": "Bí xanh", "category": "củ", "price": 21000, "image": "/src/assets/images/bi-xanh.jpg" },
+  { "id": 15, "name": "Rau thơm hỗn hợp", "category": "rau", "price": 12000, "image": "/src/assets/images/rau-thom.jpg" },
+  { "id": 16, "name": "Khoai lang", "category": "củ", "price": 18000, "image": "/src/assets/images/khoai-lang.jpg" },
+  { "id": 17, "name": "Cà tím", "category": "quả", "price": 16000, "image": "/src/assets/images/ca-tim.jpg" },
+  { "id": 18, "name": "Đậu bắp", "category": "quả", "price": 15000, "image": "/src/assets/images/dau-bap.jpg" },
+  { "id": 19, "name": "Mướp hương", "category": "quả", "price": 17000, "image": "/src/assets/images/muop-huong.jpg" },
+  { "id": 20, "name": "Bông cải xanh", "category": "rau", "price": 26000, "image": "/src/assets/images/bong-cai-xanh.jpg" }
+]
