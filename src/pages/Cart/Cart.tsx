@@ -1,11 +1,17 @@
-import { useCartStore } from '../../store/useCartStore'
+import { useCartStore } from "../../store/useCartStore";
 
 export default function Cart() {
-  const { items, removeFromCart, clearCart, totalPrice } = useCartStore()
+  const items = useCartStore((state) => state.items);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const clearCart = useCartStore((state) => state.clearCart);
+  const getTotalPrice = useCartStore((state) => state.getTotalPrice);
+
+  const totalPrice = getTotalPrice(); // ✅ gọi hàm tính tổng
 
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold mb-4">🛒 Giỏ hàng của bạn</h1>
+
       {items.length === 0 ? (
         <p>Giỏ hàng trống.</p>
       ) : (
@@ -31,6 +37,7 @@ export default function Cart() {
               </div>
             ))}
           </div>
+
           <div className="mt-6 flex justify-between items-center">
             <p className="text-lg font-bold">
               Tổng: {totalPrice.toLocaleString()}₫
@@ -45,5 +52,5 @@ export default function Cart() {
         </>
       )}
     </div>
-  )
+  );
 }

@@ -1,73 +1,75 @@
-# React + TypeScript + Vite
+# 🌿 GreenFresh - Website Bán Rau Sạch
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dự án mini website bán rau củ quả tươi sạch được phát triển bằng **React + TypeScript + Vite**.  
+Giao diện hiện đại, tông màu xanh lá cây, thân thiện với người dùng và tối ưu cho trải nghiệm mua hàng.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Công nghệ sử dụng
 
-## React Compiler
+- ⚛️ **React + TypeScript** – Xây dựng giao diện
+- ⚡ **Vite** – Tối ưu tốc độ build & development
+- 🎨 **Tailwind CSS** – Thiết kế nhanh, gọn, đồng bộ
+- 🧠 **Zustand** – Quản lý trạng thái (cart, auth)
+- 🛒 **React Router DOM** – Điều hướng giữa các trang
+- ☁️ **Vercel** – Triển khai (deploy) website
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 📁 Cấu trúc thư mục
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+src/
+├─ assets/ # Ảnh banner, sản phẩm
+├─ components/ # Các component dùng chung (Header, Footer, Layout,…)
+├─ data/ # Dữ liệu tĩnh (product.ts,…)
+├─ pages/ # Các trang (Home, Products, About, Contact, Login,…)
+├─ store/ # Zustand store (useCartStore, useAuthStore)
+├─ router/ # Cấu hình route
+├─ main.tsx # Điểm khởi đầu ứng dụng
+└─ App.tsx # App chính
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## ⚙️ Cài đặt và chạy dự án
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 1️⃣ Clone dự án về máy
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+git clone https://github.com/<your-username>/greenfresh.git
+cd greenfresh
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2️⃣ Cài đặt dependencies
+npm install
+
+3️⃣ Chạy dự án ở môi trường local
+npm run dev
+
+
+Sau đó mở trình duyệt tại:
+👉 http://localhost:5173/
+
+🌐 Triển khai (Deploy) lên Vercel
+
+Đẩy dự án lên GitHub (hoặc GitLab).
+
+Vào https://vercel.com
+.
+
+Chọn “Add New Project” → “Import Project from GitHub”.
+
+Chọn repo greenfresh.
+
+Cấu hình build:
+
+Framework Preset: Vite
+
+Build Command: npm run build
+
+Output Directory: dist
+
+Nhấn Deploy ✅
+
+Sau vài phút, Vercel sẽ cung cấp link website public ví dụ:
+
+🌍 https://greenfresh.vercel.app

@@ -1,27 +1,28 @@
-import { Link } from 'react-router-dom'
-import { useCartStore } from '../store/useCartStore'
-import { useState } from 'react'
+import { Link } from "react-router-dom";
+import { useCartStore } from "../store/useCartStore";
+import { useState } from "react";
 
+// ✅ Định nghĩa kiểu dữ liệu sản phẩm
 export interface ProductCardProps {
-  id: number
-  name: string
-  price: number
-  image: string
+  id: number;
+  name: string;
+  price: number;
+  image: string;
 }
 
-export default function ProductCard({ id, name, price, image }: ProductCardProps) {
-  const { addToCart } = useCartStore()
-  const [addedMessage, setAddedMessage] = useState('')
+export default function ProductCardHome({ id, name, price, image }: ProductCardProps) {
+  const addToCart = useCartStore((state) => state.addToCart);
+  const [addedMessage, setAddedMessage] = useState("");
 
   const handleAddToCart = () => {
-    addToCart({ id, name, price, image, quantity: 1 })
-    setAddedMessage('✅ Đã thêm vào giỏ hàng!')
-    setTimeout(() => setAddedMessage(''), 1500)
-  }
+    addToCart({ id, name, price, image, quantity: 1 });
+    setAddedMessage("✅ Đã thêm vào giỏ hàng!");
+    setTimeout(() => setAddedMessage(""), 1500);
+  };
 
   return (
-    <div className="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-2xl transition-transform transform hover:-translate-y-1">
-      {/* Link đến trang chi tiết sản phẩm */}
+    <div className="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-2xl transition-transform transform hover:-translate-y-1 flex flex-col">
+      {/* Hình ảnh sản phẩm */}
       <Link to={`/products/${id}`} className="block relative">
         <img
           src={image}
@@ -30,13 +31,12 @@ export default function ProductCard({ id, name, price, image }: ProductCardProps
         />
       </Link>
 
-      <div className="p-4 flex flex-col items-center">
-        <h3 className="text-lg font-semibold text-center mb-2">{name}</h3>
-        <p className="text-green-600 font-bold mb-3 text-center">
-          {price.toLocaleString()}₫
-        </p>
+      {/* Nội dung */}
+      <div className="p-4 flex flex-col items-center text-center flex-1">
+        <h3 className="text-lg font-semibold mb-1">{name}</h3>
+        <p className="text-green-600 font-bold mb-3">{price.toLocaleString()}₫</p>
 
-        <div className="flex gap-3 w-full">
+        <div className="flex gap-3 w-full mt-auto">
           <Link
             to={`/products/${id}`}
             className="flex-1 border border-green-600 text-green-600 py-2 rounded-lg text-center hover:bg-green-600 hover:text-white transition"
@@ -52,11 +52,9 @@ export default function ProductCard({ id, name, price, image }: ProductCardProps
         </div>
 
         {addedMessage && (
-          <p className="text-green-600 text-sm mt-2 text-center animate-fadeIn">
-            {addedMessage}
-          </p>
+          <p className="text-green-600 text-sm mt-2 animate-fadeIn">{addedMessage}</p>
         )}
       </div>
     </div>
-  )
+  );
 }
