@@ -17,26 +17,31 @@ export default function Login() {
       return
     }
 
-    // ✅ Giả lập xác thực (có thể thay bằng API sau này)
+    // ✅ Giả lập đăng nhập có phân quyền
     if (email === 'admin@gmail.com' && password === '123456') {
-      login({ username: 'Admin', email })
-      navigate('/')
+      login({ username: 'Admin', email, role: 'admin' })
+      navigate('/Admin') // 👉 Chuyển sang trang admin
+    } else if (email === 'user@gmail.com' && password === '123456') {
+      login({ username: 'User', email, role: 'user' })
+      navigate('/') // 👉 Chuyển sang TRANG CHỦ người dùng
     } else {
       setError('Sai email hoặc mật khẩu!')
     }
   }
 
   return (
-    <div className="flex justify-center items-center h-[80vh]">
+    <div className="flex justify-center items-center h-[80vh] bg-gray-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-xl p-8 w-full max-w-sm border"
+        className="bg-white shadow-lg rounded-xl p-8 w-full max-w-sm border border-gray-200"
       >
         <h2 className="text-2xl font-bold text-center mb-4 text-green-600">
           Đăng nhập
         </h2>
 
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
+        )}
 
         <input
           type="email"
@@ -55,7 +60,7 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition-all duration-200"
         >
           Đăng nhập
         </button>

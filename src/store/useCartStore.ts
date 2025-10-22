@@ -2,21 +2,21 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type CartItem = {
-  id: number
-  name: string
-  price: number
-  quantity: number
-  image?: string // ✅ thêm dòng này
-}
-
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string; // ✅ có thể có hoặc không ảnh
+};
 
 type CartStore = {
   items: CartItem[];
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void; // ✅ thêm hàm chỉnh sửa số lượng
   clearCart: () => void;
-  getTotalPrice: () => number;   // ✅ thêm hàm này
-  getTotalItems: () => number;   // ✅ thêm hàm đếm số lượng
+  getTotalPrice: () => number;
+  getTotalItems: () => number;
 };
 
 export const useCartStore = create<CartStore>()(
@@ -24,36 +24,58 @@ export const useCartStore = create<CartStore>()(
     (set, get) => ({
       items: [],
 
+      // ✅ Thêm sản phẩm vào giỏ
       addToCart: (item) => {
         const existing = get().items.find((i) => i.id === item.id);
         if (existing) {
+          // Nếu đã có -> tăng số lượng
           set({
             items: get().items.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
+              i.id === item.id
+                ? { ...i, quantity: i.quantity + item.quantity }
+                : i
             ),
           });
         } else {
+          // Nếu chưa có -> thêm mới
           set({ items: [...get().items, item] });
         }
       },
 
+      // ✅ Cập nhật số lượng sản phẩm
+      updateQuantity: (id, quantity) => {
+        if (quantity <= 0) {
+          // Nếu nhập 0 hoặc nhỏ hơn -> xóa khỏi giỏ
+          set({ items: get().items.filter((i) => i.id !== id) });
+        } else {
+          set({
+            items: get().items.map((i) =>
+              i.id === id ? { ...i, quantity } : i
+            ),
+          });
+        }
+      },
+
+      // ✅ Xóa 1 sản phẩm khỏi giỏ
       removeFromCart: (id) =>
         set({ items: get().items.filter((i) => i.id !== id) }),
 
+      // ✅ Xóa toàn bộ giỏ hàng
       clearCart: () => set({ items: [] }),
 
-      // ✅ Hàm tính tổng giá tiền
+      // ✅ Tính tổng giá
       getTotalPrice: () => {
-        const items = get().items;
-        return items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+        return get().items.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
       },
 
-      // ✅ Hàm tính tổng số lượng sản phẩm
+      // ✅ Tính tổng số lượng sản phẩm
       getTotalItems: () => {
-        const items = get().items;
-        return items.reduce((sum, i) => sum + i.quantity, 0);
+        return get().items.reduce((sum, item) => sum + item.quantity, 0);
       },
     }),
-    { name: "cart-storage" }
+    { name: "cart-storage" } // ✅ Lưu giỏ hàng trong localStorage
   )
 );

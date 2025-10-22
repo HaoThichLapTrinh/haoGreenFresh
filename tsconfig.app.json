@@ -1,28 +1,29 @@
 {
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    /* ✅ Nâng cao cấu hình TypeScript cho React 18 */
     "target": "ES2022",
-    "useDefineForClassFields": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "module": "ESNext",
-    "types": ["vite/client"],
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",                  // ✅ Bắt buộc để JSX hoạt động
+    "types": ["vite/client", "react"],   // ✅ Thêm "react" để TS nhận namespace JSX
     "skipLibCheck": true,
+    "allowJs": false,
+    "useDefineForClassFields": true,
+    "strict": true,
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    /* ✅ Cho phép import module hiện đại */
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
 
-    /* Linting */
-    "strict": true,
+    /* ✅ Kiểm tra tốt hơn */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

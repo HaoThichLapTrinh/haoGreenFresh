@@ -7,6 +7,7 @@ export default function Register() {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [role, setRole] = useState<'admin' | 'user'>('user') // ✅ Mặc định là người dùng
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
@@ -18,8 +19,12 @@ export default function Register() {
       return
     }
 
-    register({ username, email })
-    navigate('/')
+    // ✅ Lưu thông tin tài khoản kèm vai trò
+    register({ username, email, role })
+
+    // ✅ Chuyển hướng dựa vào vai trò
+    if (role === 'admin') navigate('/admin')
+    else navigate('/user')
   }
 
   return (
@@ -53,10 +58,20 @@ export default function Register() {
         <input
           type="password"
           placeholder="Mật khẩu"
-          className="border w-full p-2 mb-4 rounded"
+          className="border w-full p-2 mb-3 rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        {/* ✅ Chọn vai trò */}
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value as 'admin' | 'user')} // ✅ ép kiểu để fix lỗi
+          className="border w-full p-2 mb-4 rounded"
+        >
+          <option value="user">Người dùng</option>
+          <option value="admin">Quản trị viên</option>
+        </select>
 
         <button
           type="submit"
