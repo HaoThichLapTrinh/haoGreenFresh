@@ -22,9 +22,11 @@ export default function Register() {
     // ✅ Lưu thông tin tài khoản kèm vai trò
     register({ username, email, role })
 
-    // ✅ Chuyển hướng dựa vào vai trò
-    if (role === 'admin') navigate('/admin')
-    else navigate('/user')
+   if (role === 'admin') navigate('/admin')
+    else navigate('/')
+
+
+
   }
 
   return (

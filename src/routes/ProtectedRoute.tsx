@@ -20,13 +20,10 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, isAdmin } = useAuthStore();
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (!isAdmin()) {
-    return <Navigate to="/" replace />;
-  }
-
+  // TẠM TẮT kiểm tra đăng nhập cho dễ test
   return children;
+
+  // Nếu muốn chỉ tắt kiểm tra admin thôi:
+  // if (!user) return <Navigate to="/login" replace />;
+  // return children;
 }

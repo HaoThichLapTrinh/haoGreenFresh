@@ -1,21 +1,24 @@
+// src/pages/Cart/Cart.tsx
 import { useState } from "react";
 import { useCartStore } from "../../store/useCartStore";
+import { useOrderStore } from "../../store/useOrderStore"; // ✅ Thêm store quản lý đơn hàng
+import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
-  const items = useCartStore((state) => state.items);
-  const removeFromCart = useCartStore((state) => state.removeFromCart);
-  const updateQuantity = useCartStore((state) => state.updateQuantity);
-  const clearCart = useCartStore((state) => state.clearCart);
-  const getTotalPrice = useCartStore((state) => state.getTotalPrice);
+  const { items, removeFromCart, updateQuantity, clearCart, getTotalPrice } =
+    useCartStore();
+  const { addOrder } = useOrderStore(); // ✅ Lấy hàm thêm đơn hàng
+  const navigate = useNavigate();
 
   const [isCheckout, setIsCheckout] = useState(false);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState<{
-    type: "success" | "error" | "";
-    text: string;
-  }>({ type: "", text: "" });
+  const [payment, setPayment] = useState("COD");
+  const [message, setMessage] = useState<{ type: "success" | "error" | ""; text: string }>({
+    type: "",
+    text: "",
+  });
 
   const totalPrice = getTotalPrice();
 
@@ -33,25 +36,40 @@ export default function Cart() {
       return;
     }
 
+    // ✅ Lưu đơn hàng vào store (LocalStorage)
+    addOrder({
+      customerName: name,
+      email: "guest@gmail.com", // có thể thay bằng user.email nếu có login
+      phone,
+      address,
+      items,
+      total: totalPrice,
+    });
+
+    // ✅ Hiển thị thông báo và reset form
     setMessage({
       type: "success",
-      text: "🎉 Thanh toán thành công! Cảm ơn bạn đã mua sắm.",
+      text: `🎉 Thanh toán thành công! Cảm ơn bạn đã mua sắm bằng hình thức ${payment}.`,
     });
+
     clearCart();
     setIsCheckout(false);
     setName("");
     setAddress("");
     setPhone("");
 
-    // Ẩn thông báo sau 3s
-    setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+    // ✅ Sau 2 giây, chuyển sang trang admin orders
+    setTimeout(() => {
+      setMessage({ type: "", text: "" });
+      navigate("/admin/orders");
+    }, 2000);
   };
 
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold mb-4">🛒 Giỏ hàng</h1>
 
-      {/* Hiển thị thông báo */}
+      {/* Thông báo */}
       {message.text && (
         <div
           className={`mb-4 p-3 rounded text-white font-medium ${
@@ -62,7 +80,6 @@ export default function Cart() {
         </div>
       )}
 
-      {/* Giao diện 1: Giỏ hàng */}
       {!isCheckout ? (
         <>
           {items.length === 0 ? (
@@ -76,7 +93,6 @@ export default function Cart() {
                     key={item.id}
                     className="flex justify-between items-center border-b pb-3"
                   >
-                    {/* Ảnh + thông tin sản phẩm */}
                     <div className="flex items-center gap-4">
                       <img
                         src={item.image || "/images/default.png"}
@@ -91,7 +107,6 @@ export default function Cart() {
                       </div>
                     </div>
 
-                    {/* Số lượng + nút xóa */}
                     <div className="flex items-center gap-2">
                       <input
                         type="number"
@@ -120,7 +135,7 @@ export default function Cart() {
                 </p>
                 <button
                   onClick={handleCheckout}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
                 >
                   💳 Thanh toán
                 </button>
@@ -129,7 +144,7 @@ export default function Cart() {
           )}
         </>
       ) : (
-        /* Giao diện 2: Form đặt hàng */
+        /* Form thanh toán */
         <div className="mt-6">
           <h2 className="text-xl font-semibold mb-4">📝 Thông tin đặt hàng</h2>
 
@@ -156,7 +171,24 @@ export default function Cart() {
               className="w-full border rounded px-3 py-2"
             />
 
-            <div className="flex justify-between">
+            {/* Phương thức thanh toán */}
+            <div>
+              <label className="block font-semibold mb-2">
+                Phương thức thanh toán:
+              </label>
+              <select
+                value={payment}
+                onChange={(e) => setPayment(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+              >
+                <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+                <option value="Momo">Ví MoMo</option>
+                <option value="Bank">Chuyển khoản ngân hàng</option>
+              </select>
+            </div>
+
+            {/* Nút hành động */}
+            <div className="flex justify-between mt-4">
               <button
                 onClick={() => setIsCheckout(false)}
                 className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
@@ -166,7 +198,7 @@ export default function Cart() {
 
               <button
                 onClick={handleOrder}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
               >
                 ✅ Xác nhận thanh toán
               </button>

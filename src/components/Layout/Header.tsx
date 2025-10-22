@@ -3,10 +3,11 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { useCartStore } from "../../store/useCartStore";
 import { useState } from "react";
 
+
 export default function Header() {
   const { user, logout } = useAuthStore();
-  const getTotalItems = useCartStore((state) => state.getTotalItems); // ✅ đổi sang hàm
-  const totalItems = getTotalItems(); // ✅ gọi để lấy tổng số sản phẩm
+  const totalItems = useCartStore((state) => state.getTotalItems());
+
 
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -50,17 +51,30 @@ export default function Header() {
             )}
           </Link>
 
-          {user ? (
-            <div className="flex items-center space-x-3">
-              <span>👋 {user.username}</span>
-              <button
-                onClick={handleLogout}
-                className="bg-white text-green-600 px-3 py-1 rounded hover:bg-green-100 transition"
-              >
-                Đăng xuất
-              </button>
-            </div>
-          ) : (
+           {user ? (
+  <div className="flex items-center space-x-3">
+    <button
+      onClick={() => {
+        if (user.role === "admin") {
+          navigate("/Admin"); // 👉 Nếu là admin thì sang trang Admin
+        } else {
+          navigate("/"); // 👉 Người dùng bình thường về trang chủ
+        }
+      }}
+      className="hover:underline"
+    >
+      👋 {user.username}
+    </button>
+
+    <button
+      onClick={handleLogout}
+      className="bg-white text-green-600 px-3 py-1 rounded hover:bg-green-100 transition"
+    >
+      Đăng xuất
+    </button>
+  </div>
+) : (
+
             <div className="flex items-center space-x-3">
               <Link
                 to="/login"

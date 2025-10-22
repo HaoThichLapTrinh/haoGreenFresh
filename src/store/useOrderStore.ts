@@ -2,6 +2,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+/** Kiểu dữ liệu cho sản phẩm trong đơn hàng */
+export interface OrderItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
 /** Kiểu dữ liệu cho một đơn hàng */
 export interface Order {
   id: number;
@@ -9,6 +17,7 @@ export interface Order {
   email: string;
   phone: string;
   address: string;
+  items: OrderItem[]; // ✅ Danh sách sản phẩm trong đơn hàng
   total: number;
   status: "pending" | "confirmed" | "delivered" | "canceled";
   createdAt: string;
@@ -17,7 +26,7 @@ export interface Order {
 /** Store quản lý đơn hàng */
 interface OrderStore {
   orders: Order[];
-  addOrder: (order: Omit<Order, "id" | "createdAt">) => void;
+  addOrder: (order: Omit<Order, "id" | "createdAt" | "status">) => void;
   updateOrderStatus: (id: number, status: Order["status"]) => void;
   removeOrder: (id: number) => void;
   clearOrders: () => void;
@@ -33,8 +42,10 @@ export const useOrderStore = create<OrderStore>()(
         const newOrder: Order = {
           id: Date.now(),
           createdAt: new Date().toISOString(),
+          status: "pending", // ✅ mặc định chờ xử lý
           ...order,
         };
+
         set({ orders: [...get().orders, newOrder] });
       },
 
@@ -54,7 +65,8 @@ export const useOrderStore = create<OrderStore>()(
       clearOrders: () => set({ orders: [] }),
     }),
     {
-      name: "order-storage", // lưu localStorage
+      name: "order-storage", // ✅ tên key lưu trong localStorage
     }
+
   )
 );

@@ -1,38 +1,60 @@
-// src/pages/Checkout.tsx
+// src/pages/Checkout/Checkout.tsx
+import { useCartStore } from "../../store/useCartStore";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useOrderStore } from "../../store/useOrderStore"; // ✅ thêm dòng này ở đầu file
 
-import { useCartStore } from '../../store/useCartStore'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-// Không cần import React nếu bạn đang dùng Babel/Vite/CRA hiện đại
 
 export default function Checkout() {
-  // ✅ Đã sửa: Lấy hàm getTotalPrice từ store thay vì một thuộc tính totalPrice không tồn tại
-  const { items, getTotalPrice, clearCart } = useCartStore() 
-  const navigate = useNavigate()
-  const [success, setSuccess] = useState(false)
+  const { items, getTotalPrice, clearCart } = useCartStore();
+  const navigate = useNavigate();
+  const [success, setSuccess] = useState(false);
+  const { addOrder } = useOrderStore(); // ✅ lấy hàm thêm đơn hàng
 
-  // Tính toán tổng tiền thực tế bằng cách gọi hàm
-  const totalPrice = getTotalPrice(); // Tính toán giá trị để tiện dùng ở dưới
+
+  // 🧾 Thông tin người mua
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    payment: "cod",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handlePayment = () => {
-    // Sử dụng giá trị đã tính
-    if (totalPrice === 0) return 
+  if (items.length === 0) return alert("Giỏ hàng trống!");
+  if (!form.name || !form.phone || !form.address)
+    return alert("Vui lòng nhập đầy đủ thông tin giao hàng!");
 
-    // Ở đây bạn có thể tích hợp API thanh toán thực tế
-    setSuccess(true)
-    clearCart()
-    setTimeout(() => {
-      navigate('/')
-    }, 3000) // Chuyển về trang chủ sau 3s
-  }
+  // 🧾 Lưu đơn hàng vào store (✅ thêm items)
+  addOrder({
+    customerName: form.name,
+    email: "",
+    phone: form.phone,
+    address: form.address,
+    items, // ✅ thêm danh sách sản phẩm
+    total: getTotalPrice(),
+  });
 
-  // Thay thế items.length === 0 bằng totalPrice === 0 để bao gồm cả trường hợp giỏ hàng có item nhưng số lượng bằng 0
-  if (totalPrice === 0 && !success) {
+  setSuccess(true);
+  clearCart();
+
+  // ⏳ chuyển sang trang admin sau 2 giây
+  setTimeout(() => navigate("/admin/orders"), 2000);
+};
+
+
+
+
+  if (items.length === 0 && !success) {
     return (
       <div className="container mx-auto px-4 py-10 text-center">
         <p className="text-xl text-gray-700">Giỏ hàng của bạn đang trống 😢</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -41,14 +63,13 @@ export default function Checkout() {
         Thanh Toán
       </h1>
 
-      {success && (
+      {success ? (
         <div className="bg-green-100 text-green-700 p-4 rounded mb-6 text-center font-medium">
           🎉 Thanh toán thành công! Cảm ơn bạn đã mua hàng.
         </div>
-      )}
-
-      {!success && (
+      ) : (
         <>
+          {/* 🛍 Danh sách sản phẩm */}
           <div className="overflow-x-auto mb-6">
             <table className="min-w-full bg-white rounded-lg shadow">
               <thead>
@@ -83,11 +104,53 @@ export default function Checkout() {
             </table>
           </div>
 
+          {/* 🧾 Form thông tin người mua */}
+          <div className="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 className="text-xl font-semibold mb-4 text-green-700">
+              Thông tin giao hàng
+            </h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                name="name"
+                placeholder="Họ và tên"
+                value={form.name}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded w-full"
+              />
+              <input
+                type="text"
+                name="phone"
+                placeholder="Số điện thoại"
+                value={form.phone}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded w-full"
+              />
+              <input
+                type="text"
+                name="address"
+                placeholder="Địa chỉ giao hàng"
+                value={form.address}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded w-full col-span-2"
+              />
+              <select
+                name="payment"
+                value={form.payment}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded w-full col-span-2"
+              >
+                <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+                <option value="bank">Chuyển khoản ngân hàng</option>
+              </select>
+            </div>
+          </div>
+
+          {/* 💰 Tổng tiền + nút xác nhận */}
           <div className="flex justify-between items-center mb-6">
             <span className="text-xl font-semibold">Tổng tiền:</span>
             <span className="text-2xl font-bold text-green-600">
-              {/* ✅ Đã sửa: Sử dụng biến totalPrice đã được tính */}
-              {totalPrice.toLocaleString()}₫ 
+              {getTotalPrice().toLocaleString()}₫
             </span>
           </div>
 
@@ -102,5 +165,5 @@ export default function Checkout() {
         </>
       )}
     </div>
-  )
+  );
 }

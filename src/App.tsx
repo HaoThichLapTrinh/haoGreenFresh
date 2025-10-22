@@ -13,6 +13,9 @@ import { ProtectedRoute } from "./routes/ProtectedRoute";
 import AdminLayout from "./pages/admin";
 import Orders from "./pages/admin/Orders/Orders";
 import AdminProducts from "./pages/admin/Products/Products";
+import Checkout from "./pages/Checkout/Checkout";
+
+
 
 export default function App() {
   return (
@@ -26,8 +29,11 @@ export default function App() {
         <Route path="news" element={<News />} />
         <Route path="contact" element={<Contact />} />
         <Route path="cart" element={<Cart />} />
+        <Route path="checkout" element={<Checkout />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        
+        
       </Route>
 
       {/* ✅ Khu vực admin */}
@@ -39,6 +45,7 @@ export default function App() {
           </ProtectedRoute>
         }
       >
+        
         <Route path="products" element={<AdminProducts />} />
         <Route path="orders" element={<Orders />} />
       </Route>

@@ -9,6 +9,8 @@ import Contact from '../pages/Contact/Contact'
 import Cart from '../pages/Cart/Cart'
 import Login from '../pages/Auth/Login'
 import Register from '../pages/Auth/Register'
+import UserPage from '../pages/User/UserPage'
+import Orders from '../pages/admin/Orders/Orders'
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,9 @@ const router = createBrowserRouter([
       { path: 'news', element: <News /> },
       { path: 'contact', element: <Contact /> },
       { path: 'cart', element: <Cart /> },
+      { path: 'user', element: <UserPage /> }, // ✅ thêm dòng này
+      { path: "orders", element: <Orders /> },
+
     ],
   },
   { path: '/login', element: <Login /> },
