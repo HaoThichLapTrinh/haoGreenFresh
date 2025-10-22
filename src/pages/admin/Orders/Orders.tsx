@@ -1,4 +1,3 @@
-import React from "react";
 import { useOrderStore } from "../../../store/useOrderStore";
 
 export default function Orders() {

@@ -1,15 +1,23 @@
 // src/pages/Checkout.tsx
+
 import { useCartStore } from '../../store/useCartStore'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+// Không cần import React nếu bạn đang dùng Babel/Vite/CRA hiện đại
 
 export default function Checkout() {
-  const { items, totalPrice, clearCart } = useCartStore()
+  // ✅ Đã sửa: Lấy hàm getTotalPrice từ store thay vì một thuộc tính totalPrice không tồn tại
+  const { items, getTotalPrice, clearCart } = useCartStore() 
   const navigate = useNavigate()
   const [success, setSuccess] = useState(false)
 
+  // Tính toán tổng tiền thực tế bằng cách gọi hàm
+  const totalPrice = getTotalPrice(); // Tính toán giá trị để tiện dùng ở dưới
+
   const handlePayment = () => {
-    if (items.length === 0) return
+    // Sử dụng giá trị đã tính
+    if (totalPrice === 0) return 
+
     // Ở đây bạn có thể tích hợp API thanh toán thực tế
     setSuccess(true)
     clearCart()
@@ -18,7 +26,8 @@ export default function Checkout() {
     }, 3000) // Chuyển về trang chủ sau 3s
   }
 
-  if (items.length === 0 && !success) {
+  // Thay thế items.length === 0 bằng totalPrice === 0 để bao gồm cả trường hợp giỏ hàng có item nhưng số lượng bằng 0
+  if (totalPrice === 0 && !success) {
     return (
       <div className="container mx-auto px-4 py-10 text-center">
         <p className="text-xl text-gray-700">Giỏ hàng của bạn đang trống 😢</p>
@@ -77,7 +86,8 @@ export default function Checkout() {
           <div className="flex justify-between items-center mb-6">
             <span className="text-xl font-semibold">Tổng tiền:</span>
             <span className="text-2xl font-bold text-green-600">
-              {totalPrice.toLocaleString()}₫
+              {/* ✅ Đã sửa: Sử dụng biến totalPrice đã được tính */}
+              {totalPrice.toLocaleString()}₫ 
             </span>
           </div>
 

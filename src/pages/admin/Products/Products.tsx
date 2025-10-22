@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+// src/pages/admin/Products/Products.tsx
+
+import { useState } from "react"; // ✅ Đã xóa 'React,'
 import { useProductStore } from "../../../store/useProductStore";
 
 export default function Products() {
-  const { products, addProduct, updateProduct, removeProduct } = useProductStore();
+  // ✅ Đã xóa 'updateProduct' vì chưa sử dụng
+  const { products, addProduct, removeProduct } = useProductStore(); 
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [category, setCategory] = useState("");

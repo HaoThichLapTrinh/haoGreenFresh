@@ -1,9 +1,15 @@
 // src/routes/ProtectedRoute.tsx
+
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
+// ✅ SỬA LỖI TS2503:
+// Import ReactNode thay vì dùng JSX.Element.
+// ReactNode là kiểu dữ liệu linh hoạt hơn cho các phần tử con.
+import type { ReactNode } from "react"; 
 
 interface ProtectedRouteProps {
-  children: JSX.Element;
+  // ✅ ĐÃ SỬA: Thay JSX.Element bằng ReactNode
+  children: ReactNode; 
 }
 
 /**
