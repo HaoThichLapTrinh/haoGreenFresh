@@ -5,46 +5,52 @@ import { FcGoogle } from "react-icons/fc";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Login() {
-  const { login } = useAuthStore();
+  const { login, users } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [showForgot, setShowForgot] = useState(false); // ✅ popup quên mật khẩu
+  const [showForgot, setShowForgot] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSuccessMsg("");
 
     if (!email || !password) {
-      setError("Vui lòng nhập đầy đủ thông tin!");
+      setError("⚠️ Vui lòng nhập đầy đủ thông tin!");
       return;
     }
 
-    if (email === "admin@gmail.com" && password === "123456") {
-      login({ username: "Admin", email, role: "admin" });
-      navigate("/admin");
-    } else if (email === "user@gmail.com" && password === "123456") {
-      login({ username: "User", email, role: "user" });
-      navigate("/");
+    // Tìm user hợp lệ
+    const foundUser = users.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (foundUser) {
+      login(foundUser);
+      navigate(foundUser.role === "admin" ? "/admin" : "/");
     } else {
-      setError("Sai email hoặc mật khẩu!");
+      setError("❌ Sai email hoặc mật khẩu!");
     }
   };
 
   const handleGoogleLogin = () => {
-    // ✅ Demo đăng nhập Google
     setSuccessMsg("👉 Đăng nhập bằng Google (mô phỏng)");
-    login({ username: "Google User", email: "gguser@gmail.com", role: "user" });
-    setTimeout(() => navigate("/"), 1000);
+    login({
+      username: "Google User",
+      email: "gguser@gmail.com",
+      password: "google",
+      role: "user",
+    });
+    setTimeout(() => navigate("/"), 800);
   };
 
   const handleForgotPasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!resetEmail) return;
-
     setSuccessMsg(`📩 Link đặt lại mật khẩu đã gửi tới ${resetEmail}`);
     setShowForgot(false);
     setResetEmail("");
@@ -60,13 +66,9 @@ export default function Login() {
           Đăng nhập
         </h2>
 
-        {error && (
-          <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
         {successMsg && (
-          <p className="text-green-600 text-sm mb-3 text-center">
-            {successMsg}
-          </p>
+          <p className="text-green-600 text-sm mb-3 text-center">{successMsg}</p>
         )}
 
         <input
@@ -91,7 +93,7 @@ export default function Login() {
           </Link>
           <button
             type="button"
-            onClick={() => setShowForgot(true)} // ✅ mở form quên mật khẩu
+            onClick={() => setShowForgot(true)}
             className="text-green-600 hover:underline"
           >
             Quên mật khẩu?

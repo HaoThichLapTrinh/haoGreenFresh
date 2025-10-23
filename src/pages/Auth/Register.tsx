@@ -1,3 +1,4 @@
+// src/pages/Auth/Register.tsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -6,41 +7,60 @@ export default function Register() {
   const { register } = useAuthStore();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"admin" | "user">("user");
+  const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
 
-    if (!username || !email || !password || !phone) {
-      setError("Vui lòng nhập đầy đủ thông tin.");
+    if (!username || !email || !password || !confirm) {
+      setError("⚠️ Vui lòng điền đầy đủ thông tin!");
       return;
     }
 
-    register({ username, email, phone, role, password });
+    if (password !== confirm) {
+      setError("❌ Mật khẩu xác nhận không khớp!");
+      return;
+    }
 
+    const success = register({
+      username,
+      email,
+      password,
+      role: "user",
+    });
 
-    navigate(role === "admin" ? "/admin" : "/");
+    if (success) {
+      setSuccess("🎉 Đăng ký thành công! Chuyển sang đăng nhập...");
+      setTimeout(() => navigate("/login"), 1500);
+    } else {
+      setError("⚠️ Email đã tồn tại!");
+    }
   };
 
   return (
-    <div className="flex justify-center items-center h-[80vh] bg-gray-50">
+    <div className="flex justify-center items-center h-[85vh] bg-gray-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-lg rounded-xl p-8 w-full max-w-sm border border-gray-200"
+        className="bg-white shadow-lg rounded-xl p-8 w-full max-w-sm border"
       >
         <h2 className="text-2xl font-bold text-center mb-4 text-green-600">
           Đăng ký
         </h2>
 
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+        {error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
+        {success && (
+          <p className="text-green-600 text-sm mb-3 text-center">{success}</p>
+        )}
 
         <input
           type="text"
-          placeholder="Tên người dùng"
+          placeholder="Họ và tên"
           className="border w-full p-2 mb-3 rounded"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -55,14 +75,6 @@ export default function Register() {
         />
 
         <input
-          type="tel"
-          placeholder="Số điện thoại"
-          className="border w-full p-2 mb-3 rounded"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-
-        <input
           type="password"
           placeholder="Mật khẩu"
           className="border w-full p-2 mb-3 rounded"
@@ -70,14 +82,13 @@ export default function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value as "admin" | "user")}
+        <input
+          type="password"
+          placeholder="Xác nhận mật khẩu"
           className="border w-full p-2 mb-4 rounded"
-        >
-          <option value="user">Người dùng</option>
-          <option value="admin">Quản trị viên</option>
-        </select>
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+        />
 
         <button
           type="submit"

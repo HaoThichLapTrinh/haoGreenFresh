@@ -2,19 +2,14 @@ import { useEffect } from "react";
 import { useAuthStore } from "../../../store/useAuthStore";
 
 export default function Users() {
-  const { users, setUserActive, setUserInactive, user } = useAuthStore();
+  const { users, user, setUserActive, setUserInactive } = useAuthStore(); // ✅ user thay vì currentUser
 
-  // 🧠 Cập nhật realtime: chỉ gọi khi user thay đổi
   useEffect(() => {
     if (user?.email) {
       setUserActive(user.email);
-    } else {
-      // Clear trạng thái active khi logout
-      useAuthStore.setState((state) => ({
-        users: state.users.map((u) => ({ ...u, active: false })),
-      }));
+      return () => setUserInactive(user.email);
     }
-  }, [user?.email, setUserActive]);
+  }, [user?.email, setUserActive, setUserInactive]);
 
   const toggleRole = (email: string) => {
     useAuthStore.setState((state) => ({
@@ -53,7 +48,7 @@ export default function Users() {
               <tr key={u.email} className="border-b hover:bg-gray-50">
                 <td className="p-2">{u.username}</td>
                 <td>{u.email}</td>
-                <td>{u.phone}</td>
+                <td>{u.phone || "-"}</td>
                 <td>
                   <button
                     onClick={() => toggleRole(u.email)}
