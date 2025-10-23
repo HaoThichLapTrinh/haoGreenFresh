@@ -73,3 +73,6 @@ Nhấn Deploy ✅
 Sau vài phút, Vercel sẽ cung cấp link website public ví dụ:
 
 🌍 https://greenfresh.vercel.app
+
+cài thư viện biểu đồ 
+npm install recharts

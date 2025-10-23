@@ -55,11 +55,12 @@ export default function Header() {
   <div className="flex items-center space-x-3">
     <button
       onClick={() => {
-        if (user.role === "admin") {
-          navigate("/Admin"); // 👉 Nếu là admin thì sang trang Admin
+        if (user?.role?.toLowerCase() === "admin") {
+          navigate("/Admin"); // Chỉ admin mới vào
         } else {
-          navigate("/"); // 👉 Người dùng bình thường về trang chủ
-        }
+        navigate("/"); // User thường quay về trang chủ
+    }
+
       }}
       className="hover:underline"
     >
