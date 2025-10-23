@@ -1,39 +1,36 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuthStore } from '../../store/useAuthStore'
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export default function Register() {
-  const { register } = useAuthStore()
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [role, setRole] = useState<'admin' | 'user'>('user') // ✅ Mặc định là người dùng
-  const [error, setError] = useState('')
-  const navigate = useNavigate()
+  const { register } = useAuthStore();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"admin" | "user">("user");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!username || !email || !password) {
-      setError('Vui lòng nhập đầy đủ thông tin.')
-      return
+    if (!username || !email || !password || !phone) {
+      setError("Vui lòng nhập đầy đủ thông tin.");
+      return;
     }
 
-    // ✅ Lưu thông tin tài khoản kèm vai trò
-    register({ username, email, role })
-
-   if (role === 'admin') navigate('/admin')
-    else navigate('/')
+    register({ username, email, phone, role, password });
 
 
-
-  }
+    navigate(role === "admin" ? "/admin" : "/");
+  };
 
   return (
-    <div className="flex justify-center items-center h-[80vh]">
+    <div className="flex justify-center items-center h-[80vh] bg-gray-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-xl p-8 w-full max-w-sm border"
+        className="bg-white shadow-lg rounded-xl p-8 w-full max-w-sm border border-gray-200"
       >
         <h2 className="text-2xl font-bold text-center mb-4 text-green-600">
           Đăng ký
@@ -58,6 +55,14 @@ export default function Register() {
         />
 
         <input
+          type="tel"
+          placeholder="Số điện thoại"
+          className="border w-full p-2 mb-3 rounded"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+
+        <input
           type="password"
           placeholder="Mật khẩu"
           className="border w-full p-2 mb-3 rounded"
@@ -65,10 +70,9 @@ export default function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {/* ✅ Chọn vai trò */}
         <select
           value={role}
-          onChange={(e) => setRole(e.target.value as 'admin' | 'user')} // ✅ ép kiểu để fix lỗi
+          onChange={(e) => setRole(e.target.value as "admin" | "user")}
           className="border w-full p-2 mb-4 rounded"
         >
           <option value="user">Người dùng</option>
@@ -77,18 +81,18 @@ export default function Register() {
 
         <button
           type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition"
         >
           Đăng ký
         </button>
 
         <p className="text-sm text-center mt-4">
-          Đã có tài khoản?{' '}
+          Đã có tài khoản?{" "}
           <Link to="/login" className="text-green-600 hover:underline">
             Đăng nhập
           </Link>
         </p>
       </form>
     </div>
-  )
+  );
 }

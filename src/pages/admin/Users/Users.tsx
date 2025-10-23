@@ -1,51 +1,85 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 export default function Users() {
-  const [users, setUsers] = useState<any[]>([]);
+  const { users, setUserActive, setUserInactive, user } = useAuthStore();
 
+  // 🧠 Cập nhật realtime: chỉ gọi khi user thay đổi
   useEffect(() => {
-    fetch("https://fakestoreapi.com/users")
-      .then((res) => res.json())
-      .then((data) =>
-        setUsers(data.map((u: any) => ({ ...u, role: "Customer" })))
-      );
-  }, []);
+    if (user?.email) {
+      setUserActive(user.email);
+    } else {
+      // Clear trạng thái active khi logout
+      useAuthStore.setState((state) => ({
+        users: state.users.map((u) => ({ ...u, active: false })),
+      }));
+    }
+  }, [user?.email, setUserActive]);
 
-  const toggleRole = (id: number) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === id
-          ? { ...u, role: u.role === "Admin" ? "Customer" : "Admin" }
+  const toggleRole = (email: string) => {
+    useAuthStore.setState((state) => ({
+      users: state.users.map((u) =>
+        u.email === email
+          ? { ...u, role: u.role === "admin" ? "user" : "admin" }
           : u
-      )
-    );
+      ),
+    }));
   };
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4 text-green-700">Quản lý người dùng</h1>
-      <table className="w-full bg-white shadow rounded">
+      <h1 className="text-2xl font-bold mb-4 text-green-700">
+        Quản lý người dùng
+      </h1>
+      <table className="w-full bg-white shadow rounded overflow-hidden">
         <thead>
           <tr className="bg-green-600 text-white">
-            <th className="p-2">Tên</th>
-            <th>Email</th>
-            <th>Điện thoại</th>
-            <th>Quyền</th>
+            <th className="p-2 text-left">Tên</th>
+            <th className="text-left">Email</th>
+            <th className="text-left">Điện thoại</th>
+            <th className="text-left">Quyền</th>
+            <th className="text-left">Trạng thái</th>
           </tr>
         </thead>
         <tbody>
-          {users.map((u) => (
-            <tr key={u.id} className="border-b hover:bg-gray-50">
-              <td className="p-2">{u.name.firstname} {u.name.lastname}</td>
-              <td>{u.email}</td>
-              <td>{u.phone}</td>
-              <td>
-                <button onClick={() => toggleRole(u.id)} className={`px-3 py-1 rounded ${u.role === "Admin" ? "bg-green-600 text-white" : "bg-gray-200"}`}>
-                  {u.role}
-                </button>
+          {users.length === 0 ? (
+            <tr>
+              <td colSpan={5} className="text-center p-4 text-gray-500">
+                Chưa có người dùng nào.
               </td>
             </tr>
-          ))}
+          ) : (
+            users.map((u) => (
+              <tr key={u.email} className="border-b hover:bg-gray-50">
+                <td className="p-2">{u.username}</td>
+                <td>{u.email}</td>
+                <td>{u.phone}</td>
+                <td>
+                  <button
+                    onClick={() => toggleRole(u.email)}
+                    className={`px-3 py-1 rounded text-sm ${
+                      u.role === "admin"
+                        ? "bg-green-600 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    {u.role === "admin" ? "Admin" : "User"}
+                  </button>
+                </td>
+                <td>
+                  <span
+                    className={`px-2 py-1 text-xs rounded-full ${
+                      u.active
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-200 text-gray-600"
+                    }`}
+                  >
+                    {u.active ? "Đang hoạt động" : "Không hoạt động"}
+                  </span>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

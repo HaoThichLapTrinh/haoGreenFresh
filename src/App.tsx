@@ -14,6 +14,8 @@ import AdminLayout from "./pages/admin";
 import Orders from "./pages/admin/Orders/Orders";
 import AdminProducts from "./pages/admin/Products/Products";
 import Checkout from "./pages/Checkout/Checkout";
+import ForgotPassword from "./pages/Auth/ForgotPassword";
+import ResetPassword from "./pages/Auth/ResetPassword";
 
 
 
@@ -32,7 +34,8 @@ export default function App() {
         <Route path="checkout" element={<Checkout />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         
       </Route>
 
