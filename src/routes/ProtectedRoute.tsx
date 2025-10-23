@@ -9,15 +9,17 @@ interface ProtectedRouteProps {
 
 /**
  * ✅ Route bảo vệ chỉ dành cho ADMIN
+ * - Nếu chưa đăng nhập → chuyển đến trang /login
+ * - Nếu đăng nhập nhưng không phải admin → quay lại /
  */
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, isAdmin } = useAuthStore();
+  const { user } = useAuthStore();
 
   // ❌ Nếu chưa đăng nhập → quay về trang đăng nhập
   if (!user) return <Navigate to="/login" replace />;
 
   // ❌ Nếu đăng nhập nhưng không phải admin → quay về trang chủ
-  if (!isAdmin()) return <Navigate to="/" replace />;
+  if (user.role?.toLowerCase() !== "admin") return <Navigate to="/" replace />;
 
   // ✅ Nếu là admin, cho phép truy cập
   return <>{children}</>;
