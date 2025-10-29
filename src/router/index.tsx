@@ -1,35 +1,19 @@
-// src/router/index.tsx
 import { createBrowserRouter } from 'react-router-dom'
 import Layout from '../components/Layout/Layout'
-import Home from '../pages/Home/Home'
-import Products from '../pages/Products/Products'
-import About from '../pages/About/About'
-import News from '../pages/News/News'
-import Contact from '../pages/Contact/Contact'
-import Cart from '../pages/Cart/Cart'
-import Login from '../pages/Auth/Login'
-import Register from '../pages/Auth/Register'
-import UserPage from '../pages/User/UserPage'
-import Orders from '../pages/admin/Orders/Orders'
+import { publicRoutes } from './publicRoutes'
+import { authRoutes } from './authRoutes'
+import { adminRoutes } from './adminRoutes'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
     children: [
-      { index: true, element: <Home /> },
-      { path: 'products', element: <Products /> },
-      { path: 'about', element: <About /> },
-      { path: 'news', element: <News /> },
-      { path: 'contact', element: <Contact /> },
-      { path: 'cart', element: <Cart /> },
-      { path: 'user', element: <UserPage /> }, // ✅ thêm dòng này
-      { path: "orders", element: <Orders /> },
-
+      ...publicRoutes,
+      ...adminRoutes, // gộp luôn admin route (nếu cùng layout)
     ],
   },
-  { path: '/login', element: <Login /> },
-  { path: '/register', element: <Register /> },
+  ...authRoutes, // login/register nằm ngoài layout
 ])
 
 export default router
