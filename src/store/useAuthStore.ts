@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface User {
   username: string;
@@ -19,82 +20,89 @@ interface AuthState {
   setUserInactive: (email: string) => void;
 }
 
-// ✅ Store
-export const useAuthStore = create<AuthState>((set) => ({
-  // Một vài tài khoản mặc định
-  users: [
-    {
-      username: "Admin",
-      email: "admin@gmail.com",
-      password: "123456",
-      role: "admin",
-      active: false,
-    },
-    {
-      username: "User",
-      email: "user@gmail.com",
-      password: "123456",
-      role: "user",
-      active: false,
-    },
-  ],
+// ✅ Dùng persist để lưu user trong localStorage
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      // Tài khoản mặc định
+      users: [
+        {
+          username: "Admin",
+          email: "admin@gmail.com",
+          password: "123456",
+          role: "admin",
+          active: false,
+        },
+        {
+          username: "User",
+          email: "user@gmail.com",
+          password: "123456",
+          role: "user",
+          active: false,
+        },
+      ],
 
-  user: null,
+      user: null,
 
-  // Đăng ký
-  register: (newUser) => {
-    let success = false;
-    set((state) => {
-      const exists = state.users.some((u) => u.email === newUser.email);
-      if (!exists) {
-        success = true;
-        return {
-          users: [...state.users, { ...newUser, active: false }],
-        };
-      }
-      return state;
-    });
-    return success;
-  },
+      // Đăng ký
+      register: (newUser) => {
+        let success = false;
+        set((state) => {
+          const exists = state.users.some((u) => u.email === newUser.email);
+          if (!exists) {
+            success = true;
+            return {
+              users: [...state.users, { ...newUser, active: false }],
+            };
+          }
+          return state;
+        });
+        return success;
+      },
 
-  // Đăng nhập
-  login: (user) => {
-    set({ user: { ...user, active: true } });
-    set((state) => ({
-      users: state.users.map((u) =>
-        u.email === user.email ? { ...u, active: true } : u
-      ),
-    }));
-  },
-
-  // Đăng xuất
-  logout: () => {
-    set((state) => {
-      if (state.user?.email) {
-        return {
-          user: null,
+      // Đăng nhập
+      login: (user) => {
+        set({ user: { ...user, active: true } });
+        set((state) => ({
           users: state.users.map((u) =>
-            u.email === state.user?.email ? { ...u, active: false } : u
+            u.email === user.email ? { ...u, active: true } : u
           ),
-        };
-      }
-      return { user: null };
-    });
-  },
+        }));
+      },
 
-  // Set user online
-  setUserActive: (email) =>
-    set((state) => ({
-      users: state.users.map((u) =>
-        u.email === email ? { ...u, active: true } : u
-      ),
-    })),
+      // Đăng xuất
+      logout: () => {
+        set((state) => {
+          if (state.user?.email) {
+            return {
+              user: null,
+              users: state.users.map((u) =>
+                u.email === state.user?.email ? { ...u, active: false } : u
+              ),
+            };
+          }
+          return { user: null };
+        });
+      },
 
-  // Set user offline
-  setUserInactive: (email) =>
-    set((state) => ({
-      users: state.users.map((u) =>
-        u.email === email ? { ...u, active: false } : u
-      ),
-    })),
-}));
+      // Set user online
+      setUserActive: (email) =>
+        set((state) => ({
+          users: state.users.map((u) =>
+            u.email === email ? { ...u, active: true } : u
+          ),
+        })),
+
+      // Set user offline
+      setUserInactive: (email) =>
+        set((state) => ({
+          users: state.users.map((u) =>
+            u.email === email ? { ...u, active: false } : u
+          ),
+        })),
+    }),
+    {
+      name: "auth-storage", // tên key lưu trong localStorage
+    }
+  )
+);

@@ -23,7 +23,7 @@ const router = createBrowserRouter([
       { path: 'news', element: <News /> },
       { path: 'contact', element: <Contact /> },
       { path: 'cart', element: <Cart /> },
-      { path: 'user', element: <UserPage /> }, // ✅ thêm dòng này
+      { path: 'user', element: <UserPage /> }, 
       { path: "orders", element: <Orders /> },
 
     ],
