@@ -1,62 +1,49 @@
 // src/store/useProductStore.ts
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { productApi } from "../api/productApi";
+import { Product } from "../types/product";
 
-/** Kiểu dữ liệu sản phẩm */
-export interface Product {
-  id: number;
-  name: string;
-  price: number;
-  description?: string;
-  category?: string;
-  image?: string;
-  createdAt?: string;
-}
 
-/** Store quản lý sản phẩm */
 interface ProductStore {
   products: Product[];
-  addProduct: (p: Omit<Product, "id" | "createdAt">) => void;
-  updateProduct: (id: number, data: Partial<Product>) => void;
-  removeProduct: (id: number) => void;
-  clearProducts: () => void;
+  fetchProducts: () => Promise<void>;
+  addProduct: (p: Omit<Product, "id">) => Promise<void>;
+  updateProduct: (id: number, data: Partial<Product>) => Promise<void>;
+  removeProduct: (id: number) => Promise<void>;
   getProductById: (id: number) => Product | undefined;
 }
 
-export const useProductStore = create<ProductStore>()(
-  persist(
-    (set, get) => ({
-      products: [],
+export const useProductStore = create<ProductStore>((set, get) => ({
+  products: [],
 
-      /** ✅ Thêm sản phẩm mới */
-      addProduct: (p) =>
-        set({
-          products: [
-            ...get().products,
-            { ...p, id: Date.now(), createdAt: new Date().toISOString() },
-          ],
-        }),
+  /** Lấy danh sách sản phẩm từ API */
+  fetchProducts: async () => {
+    const data = await productApi.getAll();
+    set({ products: data });
+  },
 
-      /** ✅ Cập nhật sản phẩm */
-      updateProduct: (id, data) =>
-        set({
-          products: get().products.map((item) =>
-            item.id === id ? { ...item, ...data } : item
-          ),
-        }),
+  /** Thêm sản phẩm mới qua API */
+  addProduct: async (p) => {
+    const newProduct = await productApi.create(p);
+    set({ products: [...get().products, newProduct] });
+  },
 
-      /** ✅ Xóa sản phẩm */
-      removeProduct: (id) =>
-        set({ products: get().products.filter((item) => item.id !== id) }),
+  /** Cập nhật sản phẩm */
+  updateProduct: async (id, data) => {
+    const updated = await productApi.update(id, data);
+    set({
+      products: get().products.map((item) =>
+        item.id === id ? updated : item
+      ),
+    });
+  },
 
-      /** ✅ Xóa toàn bộ sản phẩm */
-      clearProducts: () => set({ products: [] }),
+  /** Xóa sản phẩm */
+  removeProduct: async (id) => {
+    await productApi.remove(id);
+    set({ products: get().products.filter((item) => item.id !== id) });
+  },
 
-      /** ✅ Lấy sản phẩm theo ID */
-      getProductById: (id) => get().products.find((item) => item.id === id),
-    }),
-    {
-      name: "product-storage", // ✅ lưu vào localStorage
-    }
-  )
-);
+  /** Tìm sản phẩm theo ID */
+  getProductById: (id) => get().products.find((item) => item.id === id),
+}));

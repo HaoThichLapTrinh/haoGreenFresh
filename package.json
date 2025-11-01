@@ -12,9 +12,15 @@
   "dependencies": {
     "@tanstack/react-query": "^5.90.5",
     "@tanstack/react-query-devtools": "^5.90.2",
-    "axios": "^1.12.2",
+    "axios": "^1.13.1",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
     "framer-motion": "^12.23.24",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.546.0",
+    "mongoose": "^8.19.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.65.0",
@@ -41,5 +47,18 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.45.0",
     "vite": "^7.1.7"
-  }
+  },
+  "description": "Dự án mini website bán rau củ quả tươi sạch được phát triển bằng **React + TypeScript + Vite**.  \r Giao diện hiện đại, tông màu xanh lá cây, thân thiện với người dùng và tối ưu cho trải nghiệm mua hàng.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HaoThichLapTrinh/haoGreenFresh.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HaoThichLapTrinh/haoGreenFresh/issues"
+  },
+  "homepage": "https://github.com/HaoThichLapTrinh/haoGreenFresh#readme"
 }
