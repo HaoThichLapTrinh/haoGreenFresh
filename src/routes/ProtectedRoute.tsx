@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user } = useAuthStore(); // ✅ dùng 'user' thay vì 'currentUser'
+  const { user } = useAuthStore(); //  dùng 'user' thay vì 'currentUser'
 
   if (!user) return <Navigate to="/login" replace />;
   if (user.role !== "admin") return <Navigate to="/" replace />;

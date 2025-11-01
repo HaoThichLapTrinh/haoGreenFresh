@@ -1,4 +1,3 @@
-// src/pages/Auth/Register.tsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -28,18 +27,20 @@ export default function Register() {
       return;
     }
 
+    // ✅ Thực hiện đăng ký
     const success = register({
       username,
       email,
       password,
       role: "user",
+      active: false,
     });
 
     if (success) {
       setSuccess("🎉 Đăng ký thành công! Chuyển sang đăng nhập...");
       setTimeout(() => navigate("/login"), 1500);
     } else {
-      setError("⚠️ Email đã tồn tại!");
+      setError("⚠️ Email đã tồn tại! Vui lòng chọn email khác.");
     }
   };
 

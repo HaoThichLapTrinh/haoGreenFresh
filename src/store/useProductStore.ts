@@ -28,7 +28,7 @@ export const useProductStore = create<ProductStore>()(
     (set, get) => ({
       products: [],
 
-      /** ✅ Thêm sản phẩm mới */
+      /**  Thêm sản phẩm mới */
       addProduct: (p) =>
         set({
           products: [
@@ -37,7 +37,7 @@ export const useProductStore = create<ProductStore>()(
           ],
         }),
 
-      /** ✅ Cập nhật sản phẩm */
+      /**  Cập nhật sản phẩm */
       updateProduct: (id, data) =>
         set({
           products: get().products.map((item) =>
@@ -45,18 +45,18 @@ export const useProductStore = create<ProductStore>()(
           ),
         }),
 
-      /** ✅ Xóa sản phẩm */
+      /**  Xóa sản phẩm */
       removeProduct: (id) =>
         set({ products: get().products.filter((item) => item.id !== id) }),
 
-      /** ✅ Xóa toàn bộ sản phẩm */
+      /**  Xóa toàn bộ sản phẩm */
       clearProducts: () => set({ products: [] }),
 
-      /** ✅ Lấy sản phẩm theo ID */
+      /**  Lấy sản phẩm theo ID */
       getProductById: (id) => get().products.find((item) => item.id === id),
     }),
     {
-      name: "product-storage", // ✅ lưu vào localStorage
+      name: "product-storage", //  lưu vào localStorage
     }
   )
 );
