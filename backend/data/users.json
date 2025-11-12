@@ -4,6 +4,30 @@
     "name": "An",
     "email": "trongan@gmail.com",
     "password": "$2b$10$qnzfcYovm2xijfg/cmvAROknr4rRyRgG2bseAQx17XYjLeIJRXhh6",
+    "role": "user",
     "createdAt": "2025-11-01T16:53:56.519Z"
+  },
+  {
+    "id": 1762959876567,
+    "name": "Nguyễn Văn A",
+    "email": "test123@test.com",
+    "password": "$2b$10$VVVFqfKKj6ZbVNVg0gvn.eF/nHSSg8ezMSqmChbh/I.KfwLbnFfJi",
+    "role": "user",
+    "createdAt": "2025-11-12T15:04:36.567Z"
+  },
+  {
+    "id": 1700000000000,
+    "name": "Admin",
+    "email": "admin@gmail.com",
+    "password": "$2b$10$VVVFqfKKj6ZbVNVg0gvn.eF/nHSSg8ezMSqmChbh/I.KfwLbnFfJi",
+    "role": "admin",
+    "createdAt": "2025-11-12T00:00:00.000Z"
+  },
+  {
+    "id": 1762960643982,
+    "name": "viet",
+    "email": "admin1@gmail.com",
+    "password": "$2b$10$ETZYxEnyeNWVF0dAaHRfr.A/DBYCOmI9Tfd9.bfrsHc163ZXOACGy",
+    "createdAt": "2025-11-12T15:17:23.982Z"
   }
 ]

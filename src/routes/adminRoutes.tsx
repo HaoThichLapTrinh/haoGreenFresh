@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { RouteObject, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import AdminLayout from "../pages/admin";
 import Dashboard from "../pages/admin/Dashboard/Dashboard";
@@ -7,7 +7,7 @@ import Orders from "../pages/admin/Orders/Orders";
 import ContactsAdmin from "../pages/admin/Contacts/Contacts";
 import Users from "../pages/admin/Users/Users";
 
-export const AdminRoutes = [
+export const adminRoutes: RouteObject[] = [
   {
     path: "/admin",
     element: (

@@ -1,46 +1,59 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import { authApi } from "../../api/authApi";
 
 export default function Register() {
   const { register } = useAuthStore();
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setLoading(true);
 
-    if (!username || !email || !password || !confirm) {
+    if (!name || !email || !password || !confirm) {
       setError("⚠️ Vui lòng điền đầy đủ thông tin!");
+      setLoading(false);
       return;
     }
 
     if (password !== confirm) {
       setError("❌ Mật khẩu xác nhận không khớp!");
+      setLoading(false);
       return;
     }
 
-    // ✅ Thực hiện đăng ký
-    const success = register({
-      username,
-      email,
-      password,
-      role: "user",
-      active: false,
-    });
+    try {
+      // Gọi API backend để đăng ký
+      await authApi.register({
+        name,
+        email,
+        password,
+      });
 
-    if (success) {
+      // Lưu vào local store
+      register({
+        username: name,
+        email,
+        password,
+        role: "user",
+      });
+
       setSuccess("🎉 Đăng ký thành công! Chuyển sang đăng nhập...");
       setTimeout(() => navigate("/login"), 1500);
-    } else {
-      setError("⚠️ Email đã tồn tại! Vui lòng chọn email khác.");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "⚠️ Đăng ký thất bại!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,8 +76,8 @@ export default function Register() {
           type="text"
           placeholder="Họ và tên"
           className="border w-full p-2 mb-3 rounded"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
 
         <input
@@ -93,9 +106,10 @@ export default function Register() {
 
         <button
           type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition"
+          disabled={loading}
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Đăng ký
+          {loading ? "Đang đăng ký..." : "Đăng ký"}
         </button>
 
         <p className="text-sm text-center mt-4">

@@ -1,39 +1,56 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import { authApi } from "../../api/authApi";
 import { FcGoogle } from "react-icons/fc";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Login() {
-  const { login, users } = useAuthStore();
+  const { login } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccessMsg("");
+    setLoading(true);
 
     if (!email || !password) {
       setError("⚠️ Vui lòng nhập đầy đủ thông tin!");
+      setLoading(false);
       return;
     }
 
-    // Tìm user hợp lệ
-    const foundUser = users.find(
-      (u) => u.email === email && u.password === password
-    );
-
-    if (foundUser) {
-      login(foundUser);
-      navigate(foundUser.role === "admin" ? "/admin" : "/");
-    } else {
-      setError("❌ Sai email hoặc mật khẩu!");
+    try {
+      // Gọi API backend
+      const response = await authApi.login({ email, password });
+      
+      // Lưu token
+      localStorage.setItem("token", response.token);
+      
+      // Cập nhật user trong store
+      login({
+        username: response.user.name,
+        email: response.user.email,
+        password: password,
+        role: response.user.role || "user",
+      });
+      
+      setSuccessMsg("✅ Đăng nhập thành công!");
+      setTimeout(() => {
+        navigate(response.user.role === "admin" ? "/admin" : "/");
+      }, 800);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "❌ Sai email hoặc mật khẩu!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -102,9 +119,10 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition"
+          disabled={loading}
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Đăng nhập
+          {loading ? "Đang đăng nhập..." : "Đăng nhập"}
         </button>
 
         <div className="text-center mt-4">

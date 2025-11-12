@@ -36,6 +36,7 @@ export const register = (req, res) => {
     name,
     email,
     password: hashed,
+    role: "user", // Mặc định là user
     createdAt: new Date().toISOString(),
   };
 
@@ -56,11 +57,15 @@ export const login = (req, res) => {
   const valid = bcrypt.compareSync(password, user.password);
   if (!valid) return res.status(400).json({ message: "Sai mật khẩu." });
 
-  const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
+  const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, SECRET_KEY, {
     expiresIn: "2h",
   });
 
-  res.json({ message: "Đăng nhập thành công!", token, user });
+  // Không trả về password
+  const userWithoutPassword = { ...user };
+  delete userWithoutPassword.password;
+
+  res.json({ message: "Đăng nhập thành công!", token, user: userWithoutPassword });
 };
 
 // ✅ Lấy thông tin người dùng hiện tại
